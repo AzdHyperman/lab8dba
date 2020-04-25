@@ -1,35 +1,93 @@
 package com.lab8;
 
-import java.io.ObjectInputStream;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ArtistController {
-    private String name;
-    private String country;
 
-    public void create(String name, String country)
+public class ArtistController implements DAO<Artist>{
+    private List<Artist> artists = new ArrayList<>();
+    private Statement stmt = null;
+
+    ArtistController(Statement stmt)
     {
-        name= getName();
-        country=getCountry();
-    }
-    public void findByName(String name)
-    {
-        if ((this.name).equals(name))
-            (this.name)=name;
+        this.stmt = stmt;
     }
 
-    public String getName() {
-        return name;
+    public void create(String name, String country) throws SQLException {
+        this.stmt.executeUpdate("INSERT INTO artists (name, country) VALUES ('" + name + "', '" + country + "')");
+        ResultSet rs = stmt.executeQuery("SELECT count(*) FROM artists");
+        int id = 0;
+        if ( rs.next() ) {
+            id = rs.getInt(1);
+        }
+        this.save(new Artist(id, name, country));
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Artist findByName(String artistName) throws SQLException {
+        Artist artist = null;
+
+        ResultSet rs = stmt.executeQuery("SELECT * FROM artists WHERE name = '" + artistName + "'");
+        if ( rs.next() ) {
+            int id = rs.getInt(1);
+            String name = rs.getString(2);
+            String country = rs.getString(3);
+            artist = new Artist(id, name, country);
+        }
+        return artist;
     }
 
-    public String getCountry() {
-        return country;
+    @Override
+    public Artist get(long id) {
+        return null;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    @Override
+    public List<Artist> getAll() throws SQLException {
+        updateFromDB();
+        return this.artists;
+    }
+
+    public int getSize() throws SQLException {
+        updateFromDB();
+        return this.artists.size();
+    }
+
+    public void createTable() throws SQLException {
+        this.stmt.executeUpdate("CREATE TABLE artists(\n" +
+                "   id serial PRIMARY KEY,\n" +
+                "   name VARCHAR (100)  NOT NULL,\n" +
+                "   country VARCHAR (100));");
+    }
+
+    public void deleteFromDB() throws SQLException {
+        this.stmt.executeUpdate("DELETE from artists");
+    }
+
+    public void updateFromDB() throws SQLException {
+        this.artists.clear();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM artists");
+        while ( rs.next() ) {
+            int id = rs.getInt(1);
+            String name = rs.getString(2);
+            String country = rs.getString(3);
+            this.artists.add(new Artist(id, name, country));
+        }
+    }
+
+    @Override
+    public void save(Artist artist) {
+        this.artists.add(artist);
+    }
+
+    @Override
+    public void update(Artist artist, String[] params) {
+
+    }
+
+    @Override
+    public void delete(Artist artist) {
+        this.artists.remove(artist);
     }
 }
+

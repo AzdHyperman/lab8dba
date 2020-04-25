@@ -10,19 +10,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/mysql-connector-java-5.1.35" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/mysql-connector-java-5.1.35/src" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/mysql-connector-java-5.1.35" recursive="false" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://C:/oraclexe/app/oracle/product/11.2.0/server/jdbc/lib/ojdbc14.jar!/" />
+          <root url="jar://C:/Program Files (x86)/MySQL/Connector J 8.0/mysql-connector-java-8.0.19.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

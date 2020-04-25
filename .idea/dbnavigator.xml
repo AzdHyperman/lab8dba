@@ -23,12 +23,7 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes>
-      <connection connection-id="4084ba3f-727f-40fe-a140-777b7b6ca4f1">
-        <schema name="PUBLIC" object-types="view, synonym, materialized view, table" />
-        <schema name="STUDENT" object-types="view, synonym, materialized view, table" />
-      </connection>
-    </loaded-nodes>
+    <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="4084ba3f-727f-40fe-a140-777b7b6ca4f1">
@@ -540,7 +535,7 @@ select * from STUDENTI;]]></console>
       <regional-settings>
         <date-format value="MEDIUM" />
         <number-format value="UNGROUPED" />
-        <locale value="SYSTEM_DEFAULT" />
+        <locale value="ro_RO" />
         <use-custom-formats value="false" />
       </regional-settings>
       <environment>

@@ -1,42 +1,95 @@
 package com.lab8;
 
-public class AlbumController {
-    private String name;
-    private int artistId;
-    private int releaseYear;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public void create(String name, int artistId, int releaseYear)
-{
-if(getName()==name) this.name=name;
-if(getArtistId()==artistId) this.artistId=artistId;
-if(getReleaseYear()==releaseYear) this.releaseYear=releaseYear;
-}
-public void findByArtist(int artistId)
-{
-    if(getArtistId()==artistId)
-        this.artistId=artistId;
-}
-    public String getName() {
-        return name;
+
+public class AlbumController implements DAO<Album>{
+    private List<Album> albums = new ArrayList<>();
+    private Statement stmt = null;
+
+    AlbumController(Statement stmt){
+        this.stmt = stmt;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void create(String name, int artistId, int releaseYear) throws SQLException {
+        this.stmt.executeUpdate("INSERT INTO albums (name, artist_id, release_year) " +
+                "VALUES ('" + name + "', " + artistId + ", " + releaseYear + ")");
+        ResultSet rs = stmt.executeQuery("SELECT count(*) FROM albums");
+        int id = 0;
+        if ( rs.next() ) {
+            id = rs.getInt(1);
+        }
+        this.save(new Album(id, name, artistId, releaseYear));
     }
 
-    public int getArtistId() {
-        return artistId;
+    public Album findByArtist(int artistId) throws SQLException {
+        Album album = null;
+
+        ResultSet rs = stmt.executeQuery("SELECT * FROM albums WHERE artist_id = " + artistId);
+        if ( rs.next() ) {
+            int id = rs.getInt(1);
+            String name = rs.getString(2);
+            int artist_id = rs.getInt(3);
+            int release_year = rs.getInt(4);
+            album = new Album(id, name, artist_id, release_year);
+        }
+        return album;
     }
 
-    public void setArtistId(int artistId) {
-        this.artistId = artistId;
+    public void createTable() throws SQLException {
+        this.stmt.executeUpdate("create table albums(\n" +
+                " id serial PRIMARY KEY,\n" +
+                " name VARCHAR (100)  NOT NULL,\n" +
+                " artist_id INTEGER REFERENCES artists(id),\n" +
+                " release_year INTEGER)");
     }
 
-    public int getReleaseYear() {
-        return releaseYear;
+    @Override
+    public Album get(long id) {
+        return null;
     }
 
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
+    @Override
+    public List<Album> getAll() throws SQLException {
+        updateFromDB();
+        return albums;
+    }
+
+    public int getSize() throws SQLException {
+        updateFromDB();
+        return this.albums.size();
+    }
+
+    public void deleteFromDB() throws SQLException {
+        this.stmt.executeUpdate("DELETE from albums");
+    }
+
+    public void updateFromDB() throws SQLException {
+        this.albums.clear();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM albums");
+        while ( rs.next() ) {
+            int id = rs.getInt(1);
+            String name = rs.getString(2);
+            int artist_id = rs.getInt(3);
+            int release_year = rs.getInt(4);
+            this.albums.add(new Album(id, name, artist_id, release_year));
+        }
+    }
+
+    @Override
+    public void save(Album album) {
+        this.albums.add(album);
+    }
+
+    @Override
+    public void update(Album album, String[] params) {
+
+    }
+
+    @Override
+    public void delete(Album album) {
+        this.albums.remove(album);
     }
 }
